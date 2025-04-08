@@ -1,20 +1,19 @@
-package ru.example.userservice.dto;
+package ru.example.userservice.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import ru.example.userservice.dto.ProductDto;
+import ru.example.userservice.dto.UserDto;
 
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
 
-public record PurchaseDto(
-        Long id,
+public record CreatePurchaseRequest(
         BigDecimal amount,
 
         @JsonProperty("purchase_date")
         Instant purchaseDate,
-
-        @JsonProperty("user_id")
-        Long userId,
-        List<ProductDto> products
+        List<ProductDto> products,
+        UserDto user
 ) {
 }

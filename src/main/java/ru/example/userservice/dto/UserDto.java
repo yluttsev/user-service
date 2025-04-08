@@ -1,19 +1,16 @@
 package ru.example.userservice.dto;
 
-import lombok.*;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.math.BigDecimal;
 
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
-@ToString
-@Builder
-public class UserDto {
-    private Long id;
-    private Long categoryId;
-    private String name;
-    private String email;
-    private BigDecimal totalSpent;
+public record UserDto(
+        Long id,
+        Long category,
+        String name,
+        String email,
+
+        @JsonProperty("total_spent")
+        BigDecimal totalSpent
+) {
 }
