@@ -2,47 +2,33 @@ package ru.example.userservice.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import ru.example.userservice.dto.ProductDto;
+import ru.example.userservice.dto.request.CreateProductRequest;
 import ru.example.userservice.entity.Product;
+import ru.example.userservice.mapper.ProductMapper;
 import ru.example.userservice.repository.ProductRepository;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class ProductService {
 
     private final ProductRepository productRepository;
+    private final ProductMapper productMapper;
 
-    @Transactional(readOnly = true)
-    public ProductDto getProductById(Long id) {
-        Product product = productRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Product not found with id: " + id));
-        return convertToDto(product);
+    public ProductDto create(CreateProductRequest createProductRequest) {
+        Product product = Product.builder()
+                .name(createProductRequest.name())
+                .category(createProductRequest.category())
+                .price(createProductRequest.price())
+                .build();
+        product = productRepository.save(product);
+        return productMapper.mapEntityToDto(product);
     }
 
-    @Transactional(readOnly = true)
-    public List<ProductDto> getAllProducts() {
-        return productRepository.findAll().stream()
-                .map(this::convertToDto)
-                .collect(Collectors.toList());
+    public ProductDto getById(Long id) {
+        Product product = productRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("Product with id '%d' not found".formatted(id))
+        );
+        return productMapper.mapEntityToDto(product);
     }
-
-    @Transactional(readOnly = true)
-    public List<ProductDto> getProductsByCategory(Long categoryId) {
-        return productRepository.findByCategory(categoryId).stream()
-                .map(this::convertToDto)
-                .collect(Collectors.toList());
-    }
-
-    private ProductDto convertToDto(Product product) {
-        ProductDto dto = new ProductDto();
-        dto.setId(product.getId());
-        dto.setName(product.getName());
-        dto.setCategory(product.getCategory());
-        return dto;
-    }
-
 }
