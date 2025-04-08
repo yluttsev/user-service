@@ -4,37 +4,29 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table(name = "purchase")
+@Table(name = "purchase_items")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
 @Builder
-public class Purchase {
+public class PurchaseItems {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, precision = 11, scale = 2)
-    private BigDecimal amount;
-
-    @Column(name = "purchase_date", nullable = false)
-    private LocalDateTime purchaseDate;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "purchase_id", nullable = false)
+    private Purchase purchase;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
-
-    @OneToMany(mappedBy = "purchase", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PurchaseItems> items;
+    @JoinColumn(name = "product_id", nullable = false)
+    private Product product;
 
     @Override
     public final boolean equals(Object o) {
@@ -43,7 +35,7 @@ public class Purchase {
         Class<?> oEffectiveClass = o instanceof HibernateProxy proxy ? proxy.getHibernateLazyInitializer().getPersistentClass() : o.getClass();
         Class<?> thisEffectiveClass = this instanceof HibernateProxy proxy ? proxy.getHibernateLazyInitializer().getPersistentClass() : this.getClass();
         if (thisEffectiveClass != oEffectiveClass) return false;
-        Purchase that = (Purchase) o;
+        PurchaseItems that = (PurchaseItems) o;
         return getId() != null && Objects.equals(getId(), that.getId());
     }
 
@@ -51,5 +43,4 @@ public class Purchase {
     public final int hashCode() {
         return this instanceof HibernateProxy proxy ? proxy.getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
     }
-
 }
