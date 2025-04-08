@@ -1,11 +1,27 @@
 package ru.example.userservice.entity;
 
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.proxy.HibernateProxy;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -23,18 +39,28 @@ public class Purchase {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, precision = 11, scale = 2)
-    private BigDecimal amount;
+    @Column(name = "amount", nullable = false, precision = 11, scale = 2)
+    @Builder.Default
+    private BigDecimal amount = BigDecimal.ZERO;
 
     @Column(name = "purchase_date", nullable = false)
-    private LocalDateTime purchaseDate;
+    @Builder.Default
+    private Instant purchaseDate = Instant.now();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
+    @ToString.Exclude
     private User user;
 
-    @OneToMany(mappedBy = "purchase", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PurchaseItems> items;
+    @ManyToMany
+    @JoinTable(
+            name = "purchase_items",
+            joinColumns = @JoinColumn(name = "purchase_id"),
+            inverseJoinColumns = @JoinColumn(name = "product_id")
+    )
+    @ToString.Exclude
+    @Builder.Default
+    private List<Product> products = new ArrayList<>();
 
     @Override
     public final boolean equals(Object o) {
