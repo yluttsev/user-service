@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 @Builder
 public class UserDto {
     private Long id;
+    private Long categoryId;
     private String name;
     private String email;
     private BigDecimal totalSpent;
