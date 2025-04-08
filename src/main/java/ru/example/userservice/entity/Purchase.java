@@ -48,7 +48,7 @@ public class Purchase {
     private Instant purchaseDate = Instant.now();
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     @ToString.Exclude
     private User user;
 
