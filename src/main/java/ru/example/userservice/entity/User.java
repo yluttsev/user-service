@@ -18,6 +18,7 @@ import lombok.ToString;
 import org.hibernate.proxy.HibernateProxy;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -45,11 +46,13 @@ public class User {
     private String email;
 
     @Column(name = "total_spent", nullable = false, precision = 11, scale = 2)
+    @Builder.Default
     private BigDecimal totalSpent = BigDecimal.ZERO;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @ToString.Exclude
-    private List<Purchase> purchases;
+    @Builder.Default
+    private List<Purchase> purchases = new ArrayList<>();
 
     @Override
     public final boolean equals(Object o) {
