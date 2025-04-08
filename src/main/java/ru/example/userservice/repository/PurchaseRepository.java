@@ -1,11 +1,14 @@
 package ru.example.userservice.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import ru.example.userservice.entity.Purchase;
-import ru.example.userservice.entity.User;
-
-import java.util.List;
 
 public interface PurchaseRepository extends JpaRepository<Purchase, Long> {
-    List<Purchase> findByUser(User user);
+
+    @Query("from Purchase p where p.user.id = :user_id")
+    Page<Purchase> findByUserId(@Param("user_id") Long userId, Pageable pageable);
 }
