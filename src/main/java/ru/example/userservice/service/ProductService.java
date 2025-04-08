@@ -1,5 +1,6 @@
 package ru.example.userservice.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.example.userservice.dto.ProductDto;
@@ -25,10 +26,14 @@ public class ProductService {
         return productMapper.mapEntityToDto(product);
     }
 
-    public ProductDto getById(Long id) {
-        Product product = productRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("Product with id '%d' not found".formatted(id))
+    public Product getEntityById(Long id) {
+        return productRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("Product with id '%d' not found".formatted(id))
         );
+    }
+
+    public ProductDto getDtoById(Long id) {
+        Product product = getEntityById(id);
         return productMapper.mapEntityToDto(product);
     }
 }
