@@ -1,5 +1,6 @@
 package ru.example.userservice.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.example.userservice.dto.UserDto;
@@ -17,7 +18,7 @@ public class UserService {
 
     public UserDto create(CreateUserRequest createUserRequest) {
         if (userRepository.existsByEmail(createUserRequest.email())) {
-            throw new IllegalArgumentException("User with email '%s' already exists".formatted(createUserRequest.email()));
+            throw new EntityNotFoundException("User with email '%s' already exists".formatted(createUserRequest.email()));
         }
         User user = User.builder()
                 .email(createUserRequest.email())
@@ -28,10 +29,14 @@ public class UserService {
         return userMapper.mapEntityToDto(user);
     }
 
-    public UserDto getById(Long id) {
-        User user = userRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("User with id '%d' not found")
-        );
+    public UserDto getDtoById(Long id) {
+        User user = getEntityById(id);
         return userMapper.mapEntityToDto(user);
+    }
+
+    public User getEntityById(Long id) {
+        return userRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("User with id '%d' not found".formatted(id))
+        );
     }
 }
