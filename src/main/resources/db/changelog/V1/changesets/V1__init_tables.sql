@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS users
     id          bigint PRIMARY KEY,
     name        varchar(255)   NOT NULL,
     email       varchar(254)   NOT NULL UNIQUE,
+    category    bigint         NOT NULL,
     total_spent numeric(11, 2) NOT NULL DEFAULT 0.0
 );
 
@@ -22,8 +23,9 @@ CREATE TABLE IF NOT EXISTS purchase
 CREATE TABLE IF NOT EXISTS product
 (
     id       bigint PRIMARY KEY,
-    name     varchar(255) NOT NULL,
-    category bigint       NOT NULL
+    name     varchar(255)   NOT NULL,
+    category bigint         NOT NULL,
+    price    numeric(11, 2) NOT NULL DEFAULT 0.0
 );
 
 -- changeset yluttsev:create_purchase_items_table
