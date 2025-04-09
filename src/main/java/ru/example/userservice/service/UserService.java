@@ -29,6 +29,10 @@ public class UserService {
         return userMapper.mapEntityToDto(user);
     }
 
+    public User save(User user) {
+        return userRepository.save(user);
+    }
+
     public UserDto getDtoById(Long id) {
         User user = getEntityById(id);
         return userMapper.mapEntityToDto(user);
