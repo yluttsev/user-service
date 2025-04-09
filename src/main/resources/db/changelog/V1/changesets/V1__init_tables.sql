@@ -20,20 +20,17 @@ CREATE TABLE IF NOT EXISTS purchase
     FOREIGN KEY (user_id) REFERENCES users (id)
 );
 
--- changeset yluttsev:create_product_table
-CREATE TABLE IF NOT EXISTS product
+-- changeset yluttsev:create_purchase_item_table
+CREATE TABLE IF NOT EXISTS purchase_item
 (
-    id       bigint PRIMARY KEY AUTO_INCREMENT,
-    name     varchar(255) NOT NULL,
-    category bigint       NOT NULL,
-    price    numeric(11, 2) DEFAULT 0.0
+    id         bigint PRIMARY KEY AUTO_INCREMENT,
+    product_id bigint NOT NULL UNIQUE
 );
 
--- changeset yluttsev:create_purchase_items_table
 CREATE TABLE IF NOT EXISTS purchase_items
 (
-    product_id  bigint NOT NULL,
-    purchase_id bigint NOT NULL,
-    FOREIGN KEY (product_id) REFERENCES product (id) ON DELETE CASCADE,
-    FOREIGN KEY (purchase_id) REFERENCES purchase (id) ON DELETE CASCADE
+    purchase_id      bigint NOT NULL,
+    purchase_item_id bigint NOT NULL,
+    FOREIGN KEY (purchase_id) REFERENCES purchase (id) ON DELETE CASCADE,
+    FOREIGN KEY (purchase_item_id) REFERENCES purchase_item (id) ON DELETE CASCADE
 );
