@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.math.BigDecimal;
 
-@FeignClient(name = "discount-service", url = "${discount.service.url}")
+@FeignClient(name = "discount-service-client", url = "${discount.service.url}")
 public interface DiscountServiceClient {
 
     @GetMapping("/discount/fixed")
