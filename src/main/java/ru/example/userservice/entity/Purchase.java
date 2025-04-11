@@ -26,6 +26,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Сущность покупки
+ */
 @Entity
 @Table(name = "purchase")
 @Getter

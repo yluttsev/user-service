@@ -10,6 +10,9 @@ import ru.example.userservice.entity.Purchase;
 import java.time.Instant;
 import java.util.List;
 
+/**
+ * Маппер для {@link Purchase}
+ */
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface PurchaseMapper {
 

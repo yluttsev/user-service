@@ -8,7 +8,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,6 +21,9 @@ import ru.example.userservice.service.PurchaseService;
 
 import java.util.List;
 
+/**
+ * Контроллер для работы с покупками
+ */
 @RestController
 @RequestMapping("/users/{userId}/purchases")
 @RequiredArgsConstructor
@@ -30,6 +32,13 @@ public class PurchaseController {
 
     private final PurchaseService purchaseService;
 
+    /**
+     * Создание покупки
+     *
+     * @param createPurchaseRequest Запрос на создание покупки
+     * @param userId                ID пользователя, для которого создается покупка
+     * @return {@link PurchaseDto DTO} созданной покупки
+     */
     @PostMapping
     @Operation(
             summary = "Создать покупку",
@@ -61,6 +70,14 @@ public class PurchaseController {
         return purchaseService.create(createPurchaseRequest, userId);
     }
 
+    /**
+     * Получение покупок пользователя
+     *
+     * @param userId     ID пользователя, покупки которого требуется получить
+     * @param pageNumber Номер страницы
+     * @param pageSize   Размер страницы
+     * @return Список {@link PurchaseDto DTO} покупок
+     */
     @GetMapping
     @Operation(
             summary = "Получить список покупок пользователя",

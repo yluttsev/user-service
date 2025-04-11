@@ -17,6 +17,9 @@ import ru.example.userservice.repository.PurchaseRepository;
 import java.math.BigDecimal;
 import java.util.List;
 
+/**
+ * Сервис для работы с {@link Purchase}
+ */
 @Service
 @RequiredArgsConstructor
 public class PurchaseService {
@@ -27,6 +30,14 @@ public class PurchaseService {
     private final PurchaseItemService purchaseItemService;
     private final ProductClient productClient;
 
+    /**
+     * Создание покупки для пользователя. <br>
+     * Принимает список ID продуктов, получает их DTO из Recommendation Service, затем считает их общую стоимость и прибавляет ее к totalAmount пользователя.
+     *
+     * @param createPurchaseRequest Запрос на создание покупки
+     * @param userId                ID пользователя, для которого создается покупка
+     * @return {@link PurchaseDto DTO} созданной покупки
+     */
     @Transactional
     public PurchaseDto create(CreatePurchaseRequest createPurchaseRequest, Long userId) {
         List<ProductDto> products = productClient.getAllById(createPurchaseRequest.productIds());
@@ -43,6 +54,12 @@ public class PurchaseService {
         return purchaseMapper.mapEntityToDto(purchase, products);
     }
 
+    /**
+     * Создает в БД {@link PurchaseItem} для каждого продукта из Recommendation Service, исключая уже существующие
+     *
+     * @param productDtos Список {@link ProductDto DTO} продуктов
+     * @return Список созданных {@link PurchaseItem}
+     */
     private List<PurchaseItem> createEntitiesFromProductDto(List<ProductDto> productDtos) {
         List<PurchaseItem> purchaseItems = productDtos.stream()
                 .map(product -> PurchaseItem.builder()
@@ -53,12 +70,24 @@ public class PurchaseService {
         return purchaseItemService.saveAll(purchaseItems);
     }
 
+    /**
+     * Считает общую стоимость продуктов
+     *
+     * @param productDtos Список {@link ProductDto DTO} продуктов
+     * @return общая стоимость продуктов
+     */
     private BigDecimal calculateTotalAmount(List<ProductDto> productDtos) {
         return productDtos.stream()
                 .map(ProductDto::price)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
+    /**
+     * Обновляет totalSpent у {@link User}
+     *
+     * @param user       Пользователь
+     * @param totalSpent Общая сумма покупок
+     */
     private void updateUserTotalSpent(User user, BigDecimal totalSpent) {
         user.setTotalSpent(user.getTotalSpent().add(totalSpent));
         userService.save(user);

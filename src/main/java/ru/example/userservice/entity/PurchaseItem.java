@@ -16,6 +16,9 @@ import org.hibernate.proxy.HibernateProxy;
 
 import java.util.Objects;
 
+/**
+ * Сущность продукта в покупке
+ */
 @Entity
 @Table(name = "purchase_item")
 @Getter

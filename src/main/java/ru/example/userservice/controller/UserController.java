@@ -18,6 +18,9 @@ import ru.example.userservice.dto.UserDto;
 import ru.example.userservice.dto.request.CreateUserRequest;
 import ru.example.userservice.service.UserService;
 
+/**
+ * Контроллер для работы с пользователями
+ */
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
@@ -26,6 +29,12 @@ public class UserController {
 
     private final UserService userService;
 
+    /**
+     * Создание нового пользователя
+     *
+     * @param createUserRequest {@link CreateUserRequest Запрос} на создание пользователя
+     * @return {@link UserDto DTO} созданного пользователя
+     */
     @PostMapping
     @Operation(
             summary = "Создать нового пользователя",
@@ -52,6 +61,12 @@ public class UserController {
         return userService.create(createUserRequest);
     }
 
+    /**
+     * Получение пользователя
+     *
+     * @param id ID пользователя, которого необходимо получить
+     * @return {@link UserDto DTO} пользователя
+     */
     @GetMapping("/{id}")
     @Operation(
             summary = "Получить пользователя по ID",
