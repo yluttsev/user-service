@@ -1,0 +1,41 @@
+services:
+  user-service-mysql:
+    container_name: user-service_mysql
+    image: mysql:latest
+    ports:
+      - "3307:3306"
+      - "33070:33060"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: mysql
+      MYSQL_PASSWORD: mysql
+      MYSQL_DATABASE: user_service
+    healthcheck:
+      test: [ "CMD", "bash", "-c", "mysqladmin ping -u mysql -pmysql && mysql -u mysql -pmysql -e 'USE user_service; SELECT 1'" ]
+      start_period: 120s
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - all-services
+  user-service-app:
+    container_name: user-service_app
+    image: user-service:latest
+    ports:
+      - "8082:8082"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://user-service_mysql:3306/user_service
+      SPRING_DATASOURCE_USERNAME: mysql
+      SPRING_DATASOURCE_PASSWORD: mysql
+      DISCOUNT_SERVICE_URL: http://discount-service-app:8080
+      RECOMMENDATION_SERVICE_URL: http://recommendation-service-app:8081
+      SERVER_PORT: 8082
+    depends_on:
+      user-service-mysql:
+        condition: service_healthy
+    networks:
+      - all-services
+networks:
+  all-services:
+    external: true

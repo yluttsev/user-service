@@ -52,3 +52,5 @@ dependencyManagement {
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+tasks.bootJar.archiveFileName = 'user-service.jar'
