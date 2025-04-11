@@ -40,7 +40,7 @@ public class PurchaseService {
                 .products(purchaseItems)
                 .build();
         purchase = purchaseRepository.save(purchase);
-        return purchaseMapper.mapEntityToDto(purchase);
+        return purchaseMapper.mapEntityToDto(purchase, products);
     }
 
     private List<PurchaseItem> createEntitiesFromProductDto(List<ProductDto> productDtos) {
@@ -48,6 +48,7 @@ public class PurchaseService {
                 .map(product -> PurchaseItem.builder()
                         .productId(product.id())
                         .build())
+                .filter(purchaseEntity -> !purchaseItemService.existsByProductId(purchaseEntity.getProductId()))
                 .toList();
         return purchaseItemService.saveAll(purchaseItems);
     }
@@ -67,7 +68,14 @@ public class PurchaseService {
         return purchaseRepository.findByUserId(userId, PageRequest.of(pageNumber, pageSize))
                 .getContent()
                 .stream()
-                .map(purchaseMapper::mapEntityToDto)
+                .map(purchase -> {
+                    List<Long> productIds = purchase.getProducts()
+                            .stream()
+                            .map(PurchaseItem::getProductId)
+                            .toList();
+                    List<ProductDto> products = productClient.getAllById(productIds);
+                    return purchaseMapper.mapEntityToDto(purchase, products);
+                })
                 .toList();
     }
 }

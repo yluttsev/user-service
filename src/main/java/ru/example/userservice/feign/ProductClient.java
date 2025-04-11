@@ -7,7 +7,7 @@ import ru.example.userservice.dto.ProductDto;
 
 import java.util.List;
 
-@FeignClient(name = "product-client", url = "${recommendation.service.products.url}")
+@FeignClient(name = "product-client", url = "${recommendation.service.url}")
 public interface ProductClient {
 
     @GetMapping("/products")

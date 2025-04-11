@@ -57,7 +57,7 @@ public class Purchase {
     @JoinTable(
             name = "purchase_items",
             joinColumns = @JoinColumn(name = "purchase_id"),
-            inverseJoinColumns = @JoinColumn(name = "product_id")
+            inverseJoinColumns = @JoinColumn(name = "purchase_item_id")
     )
     @ToString.Exclude
     @Builder.Default

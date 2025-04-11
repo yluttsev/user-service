@@ -16,4 +16,8 @@ public class PurchaseItemService {
     public List<PurchaseItem> saveAll(List<PurchaseItem> purchaseItems) {
         return purchaseItemRepository.saveAll(purchaseItems);
     }
+
+    public boolean existsByProductId(Long productId) {
+        return purchaseItemRepository.existsByProductId(productId);
+    }
 }
